@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusAI — Alumni Portal</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/alumni.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <div class="brand-icon">🌟</div>
+                    <div>
+                        <div class="brand-name">CampusAI</div>
+                        <div class="brand-tag">Alumni Portal</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-label">Overview</div>
+                    <div class="nav-item active" onclick="switchTab('dashboard',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        Dashboard
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-label">Mentorship</div>
+                    <div class="nav-item" onclick="switchTab('mentees',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg>
+                        My Mentees
+                        <span class="nav-badge">3</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('sessions',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Sessions
+                    </div>
+                    <div class="nav-item" onclick="switchTab('referrals',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.69 14a19.79 19.79 0 01-3.07-8.67A2 2 0 013.6 3.22h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 10a16 16 0 006.29 6.29l.75-.75a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                        </svg>
+                        Referrals
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-label">Account</div>
+                    <div class="nav-item" onclick="switchTab('profile',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        My Profile
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-chip" onclick="logout()">
+                    <div class="user-avatar" style="background:linear-gradient(135deg,var(--purple),#A78BFA)">PM</div>
+                    <div class="user-info">
+                        <div class="user-name">Priya Mehta</div>
+                        <div class="user-role">Senior SWE · Google India · 2020</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)"
+                        stroke-width="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay-backdrop" id="backdrop" onclick="closeSidebar()"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" onclick="toggleSidebar()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn" onclick="showToast('Notification settings coming soon','info')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 01-3.46 0" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- ═══ DASHBOARD ═══ -->
+            <div class="page-content tab-panel active" id="tab-dashboard">
+                <div class="alumni-hero">
+                    <div style="position:relative;z-index:1;flex:1">
+                        <div
+                            style="font-size:var(--text-xs);color:rgba(255,255,255,0.55);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">
+                            Alumni Impact Dashboard</div>
+                        <h1 class="page-title" style="color:white;margin-bottom:4px">Welcome back, Priya! 🌟</h1>
+                        <p style="color:rgba(255,255,255,0.65);font-size:var(--text-sm)">Senior Software Engineer ·
+                            Google India · Graduating Class of 2020</p>
+                        <div class="alumni-stat-strip">
+                            <div class="alumni-stat">
+                                <div class="alumni-stat-val">3</div>
+                                <div class="alumni-stat-label">Active Mentees</div>
+                            </div>
+                            <div class="alumni-stat"
+                                style="border-left:1px solid rgba(255,255,255,0.2);padding-left:var(--sp-4)">
+                                <div class="alumni-stat-val">24</div>
+                                <div class="alumni-stat-label">Sessions Done</div>
+                            </div>
+                            <div class="alumni-stat"
+                                style="border-left:1px solid rgba(255,255,255,0.2);padding-left:var(--sp-4)">
+                                <div class="alumni-stat-val">2</div>
+                                <div class="alumni-stat-label">Successful Referrals</div>
+                            </div>
+                            <div class="alumni-stat"
+                                style="border-left:1px solid rgba(255,255,255,0.2);padding-left:var(--sp-4)">
+                                <div class="alumni-stat-val">4.9★</div>
+                                <div class="alumni-stat-label">Avg Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="impact-score-ring" style="position:relative;z-index:1">
+                        <canvas id="impactRing" width="140" height="140"></canvas>
+                        <div class="impact-score-center">
+                            <div class="impact-score-num">87</div>
+                            <div class="impact-score-label">Impact Score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-12">
+                    <div class="col-8">
+                        <h3 style="color:var(--navy);margin-bottom:var(--sp-4)">Active Mentees</h3>
+                        <div class="grid grid-3" id="menteeDashGrid"></div>
+                    </div>
+                    <div class="card col-4">
+                        <div class="card-header">
+                            <div class="card-title">📅 Upcoming Sessions</div>
+                        </div>
+                        <div id="upcomingSessions"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ MENTEES ═══ -->
+            <div class="page-content tab-panel" id="tab-mentees">
+                <div class="page-header">
+                    <h1 class="page-title">My Mentees</h1>
+                </div>
+                <div class="grid grid-3" id="menteeGrid"></div>
+            </div>
+
+            <!-- ═══ SESSIONS ═══ -->
+            <div class="page-content tab-panel" id="tab-sessions">
+                <div class="page-header">
+                    <h1 class="page-title">Sessions</h1>
+                </div>
+                <div class="flex gap-3" style="margin-bottom:var(--sp-4)">
+                    <div class="tabs" style="margin:0;flex:1">
+                        <button class="tab-btn active" onclick="switchSubSessions('upcoming',this)">Upcoming</button>
+                        <button class="tab-btn" onclick="switchSubSessions('past',this)">Past Sessions</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="showModal('scheduleModal')">+ Schedule Session</button>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mentee</th>
+                                <th>Date & Time</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Rating</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessionsTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ═══ REFERRALS ═══ -->
+            <div class="page-content tab-panel" id="tab-referrals">
+                <div class="page-header">
+                    <h1 class="page-title">Referrals</h1>
+                </div>
+                <div class="flex justify-between items-center" style="margin-bottom:var(--sp-4)">
+                    <div>
+                        <h3 style="color:var(--navy)">My Referrals</h3>
+                        <p class="text-sm text-gray">2 successful · 1 under review · 1 declined</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showModal('referralModal')">+ Submit Referral</button>
+                </div>
+                <div class="grid grid-12">
+                    <div class="card p-0 col-12">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate</th>
+                                    <th>Company</th>
+                                    <th>Role</th>
+                                    <th>Referred On</th>
+                                    <th>Status</th>
+                                    <th>Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody id="referralsTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ PROFILE ═══ -->
+            <div class="page-content tab-panel" id="tab-profile">
+                <div class="page-header">
+                    <h1 class="page-title">My Mentor Profile</h1>
+                </div>
+                <div class="grid grid-12">
+                    <div class="card col-4">
+                        <div style="text-align:center;margin-bottom:var(--sp-5)">
+                            <div class="user-avatar"
+                                style="width:80px;height:80px;font-size:2rem;margin:0 auto var(--sp-4);background:linear-gradient(135deg,var(--purple),#A78BFA)">
+                                PM</div>
+                            <h3 style="color:var(--navy)">Priya Mehta</h3>
+                            <p class="text-sm text-gray">Senior SWE · Google India</p>
+                            <p class="text-sm text-gray">Batch of 2020 · Computer Science</p>
+                        </div>
+                        <hr class="divider" />
+                        <div>
+                            <div class="flex justify-between text-sm" style="margin-bottom:var(--sp-3)"><span
+                                    class="text-gray">Mentorship Mode</span><span class="badge badge-teal">Active</span>
+                            </div>
+                            <div class="flex justify-between text-sm" style="margin-bottom:var(--sp-3)"><span
+                                    class="text-gray">Max Mentees</span><span class="fw-600 text-navy">5</span></div>
+                            <div class="flex justify-between text-sm" style="margin-bottom:var(--sp-3)"><span
+                                    class="text-gray">Availability</span><span class="fw-600 text-navy">Sat
+                                    10AM–1PM</span></div>
+                            <div class="flex justify-between text-sm"><span class="text-gray">Session
+                                    Duration</span><span class="fw-600 text-navy">30 min</span></div>
+                        </div>
+                    </div>
+                    <div class="card col-8">
+                        <div class="card-header">
+                            <div class="card-title">Edit Profile</div>
+                        </div>
+                        <div class="grid grid-2" style="gap:var(--sp-4)">
+                            <div class="form-group"><label class="form-label">Current Role</label><input
+                                    class="form-input" value="Senior Software Engineer" /></div>
+                            <div class="form-group"><label class="form-label">Company</label><input class="form-input"
+                                    value="Google India" /></div>
+                            <div class="form-group"><label class="form-label">LinkedIn URL</label><input
+                                    class="form-input" value="linkedin.com/in/priyamehta" /></div>
+                            <div class="form-group"><label class="form-label">Max Mentees</label><input type="number"
+                                    class="form-input" value="5" min="1" max="10" /></div>
+                            <div class="form-group col-span-2"><label class="form-label">Bio</label><textarea
+                                    class="form-input"
+                                    rows="3">Passionate about mentoring the next generation of engineers. Specialise in system design, DSA prep, and product-thinking.</textarea>
+                            </div>
+                        </div>
+                        <div class="mt-4" style="margin-top:var(--sp-4)">
+                            <div class="form-group"><label class="form-label">Expertise Areas</label>
+                                <div class="flex flex-wrap gap-2"
+                                    style="flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-2)">
+                                    <span class="chip chip-teal">System Design <button
+                                            class="chip-remove">×</button></span>
+                                    <span class="chip chip-teal">DSA <button class="chip-remove">×</button></span>
+                                    <span class="chip chip-teal">Python <button class="chip-remove">×</button></span>
+                                    <span class="chip chip-blue">Interview Prep <button
+                                            class="chip-remove">×</button></span>
+                                    <button class="btn btn-secondary btn-sm"
+                                        onclick="showToast('Add area of expertise','info')">+ Add Area</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary"
+                            onclick="showToast('Profile updated successfully!','success')">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="scheduleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Schedule Session</div><button class="modal-close"
+                    onclick="closeModal('scheduleModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Mentee</label><select class="form-input form-select">
+                        <option>Arya Das (CS 3rd Year)</option>
+                        <option>Rohan Verma (EC 2nd Year)</option>
+                        <option>Sneha Joshi (ME 4th Year)</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" />
+                </div>
+                <div class="form-group"><label class="form-label">Time</label><input type="time" class="form-input"
+                        value="11:00" /></div>
+                <div class="form-group"><label class="form-label">Platform</label><select
+                        class="form-input form-select">
+                        <option>Google Meet</option>
+                        <option>Zoom</option>
+                        <option>In-person</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Agenda</label><textarea class="form-input" rows="3"
+                        placeholder="What will you cover in this session?"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('scheduleModal')">Cancel</button>
+                <button class="btn btn-primary"
+                    onclick="closeModal('scheduleModal');showToast('Session scheduled! Calendar invite sent.','success')">Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="referralModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Submit Referral</div><button class="modal-close"
+                    onclick="closeModal('referralModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Candidate (Mentee)</label><select
+                        class="form-input form-select">
+                        <option>Arya Das</option>
+                        <option>Rohan Verma</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Company</label><input class="form-input"
+                        placeholder="Google / Microsoft / etc." value="Google India" /></div>
+                <div class="form-group"><label class="form-label">Role</label><input class="form-input"
+                        placeholder="SWE Intern / Full-time" value="SWE Intern 2026" /></div>
+                <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" rows="3"
+                        placeholder="Brief note about the candidate…">Strong problem-solving skills, excellent communication. Ready for SWE role.</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('referralModal')">Cancel</button>
+                <button class="btn btn-primary"
+                    onclick="closeModal('referralModal');showToast('Referral submitted! We will follow up.','success')">Submit
+                    Referral</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="js/api.js"></script>
+    <script src="js/alumni.js"></script>
+    <script src="js/translator.js"></script>
+</body>
+
+</html>

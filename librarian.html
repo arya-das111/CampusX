@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusAI — Librarian Console</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/librarian.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <div class="brand-icon">📖</div>
+                    <div>
+                        <div class="brand-name">CampusAI</div>
+                        <div class="brand-tag">Librarian Console</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-label">Main</div>
+                    <div class="nav-item active" onclick="switchTab('scan',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
+                        </svg>
+                        Scan & Issue
+                    </div>
+                    <div class="nav-item" onclick="switchTab('issues',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                        </svg>
+                        Active Issues
+                        <span class="nav-badge">2</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('returns',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 3 21 3 21 9" />
+                            <polyline points="9 21 3 21 3 15" />
+                            <line x1="21" y1="3" x2="14" y2="10" />
+                            <line x1="3" y1="21" x2="10" y2="14" />
+                        </svg>
+                        Returns
+                    </div>
+                    <div class="nav-item" onclick="switchTab('fines',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                        </svg>
+                        Fines
+                        <span class="nav-badge">5</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab('reservations',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Reservations
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-label">Management</div>
+                    <div class="nav-item" onclick="switchTab('inventory',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" />
+                        </svg>
+                        Book Inventory
+                    </div>
+                    <div class="nav-item" onclick="switchTab('analytics',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                        Analytics
+                    </div>
+                    <div class="nav-item" onclick="switchTab('auditlog',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                        Audit Log
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-chip" onclick="logout()">
+                    <div class="user-avatar" style="background:linear-gradient(135deg,var(--teal),#2DD4BF)">KP</div>
+                    <div class="user-info">
+                        <div class="user-name">Kavita Patel</div>
+                        <div class="user-role">Head Librarian</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)"
+                        stroke-width="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay-backdrop" id="backdrop" onclick="closeSidebar()"></div>
+
+        <!-- Main -->
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" onclick="toggleSidebar()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="topbar-title" id="topbarTitle">Scan & Issue</div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" placeholder="Search student / book…" />
+                    </div>
+                    <button class="icon-btn" title="Switch to Student View" onclick="window.location.href='index.html'"
+                        style="font-size:16px">🔄</button>
+                </div>
+            </header>
+
+            <!-- KPI Strip (always visible) -->
+            <div style="padding:var(--sp-6) var(--sp-8) 0">
+                <div class="lib-kpi-strip">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Books Issued Today</div>
+                            <div class="stat-value">24</div>
+                            <div class="stat-change up">↑ 6 vs yesterday</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="15 3 21 3 21 9" />
+                                <polyline points="9 21 3 21 3 15" />
+                                <line x1="21" y1="3" x2="14" y2="10" />
+                                <line x1="3" y1="21" x2="10" y2="14" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Returns Today</div>
+                            <div class="stat-value">18</div>
+                            <div class="stat-change up">↑ 2 vs yesterday</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Overdue Books</div>
+                            <div class="stat-value">37</div>
+                            <div class="stat-change down">↑ 3 new today</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Fines This Month</div>
+                            <div class="stat-value">₹1,240</div>
+                            <div class="stat-change up">↑ ₹180 collected today</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SCAN & ISSUE TAB ── -->
+            <div class="page-content tab-panel active" id="tab-scan">
+                <div class="scanner-hero">
+                    <div class="scanner-hero-title">📡 Scan & Issue / Return</div>
+                    <div class="scanner-hero-sub">Scan student ID and book barcode to issue, or scan return directly
+                    </div>
+                    <div class="scan-action-grid">
+                        <div class="scan-action-card" onclick="openScanner('issue')">
+                            <div class="scan-action-icon">📤</div>
+                            <div class="scan-action-title">Issue Book</div>
+                            <div class="scan-action-desc">Scan student ID → book barcode</div>
+                        </div>
+                        <div class="scan-action-card" onclick="openScanner('return')">
+                            <div class="scan-action-icon">📥</div>
+                            <div class="scan-action-title">Return Book</div>
+                            <div class="scan-action-desc">Scan book to process return + fine</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Issue Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">⚡ Quick Issue (Manual Entry)</div>
+                        <span class="badge badge-blue">Without Scanner</span>
+                    </div>
+                    <div class="grid grid-3" style="gap:var(--sp-4);margin-bottom:var(--sp-4)">
+                        <div><label class="form-label">Student Roll Number</label><input class="form-input"
+                                id="studentRoll" placeholder="e.g. CS/2024/047" value="CS/2024/047" /></div>
+                        <div><label class="form-label">Book ISBN / Accession No.</label><input class="form-input"
+                                id="bookISBN" placeholder="e.g. 978-0262033848" value="978-0262033848" /></div>
+                        <div><label class="form-label">Due Date</label><input class="form-input" type="date"
+                                id="dueDate" /></div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="btn btn-primary" onclick="issueBook()">Issue Book</button>
+                        <button class="btn btn-secondary" onclick="lookupStudent()">🔍 Lookup Student</button>
+                    </div>
+                    <!-- Student Preview -->
+                    <div id="studentPreview"
+                        style="display:none;margin-top:var(--sp-4);padding:var(--sp-4);background:var(--blue-muted);border-radius:var(--radius-lg)">
+                        <div class="flex items-center gap-4">
+                            <div class="avatar">AD</div>
+                            <div>
+                                <div class="fw-700 text-navy">Arya Das</div>
+                                <div class="text-sm text-gray">CS/2024/047 · Computer Science · 3rd Year</div>
+                                <div style="margin-top:4px"><span class="badge badge-teal">Active Membership</span>
+                                    <span class="badge badge-red" style="margin-left:4px">₹6 Outstanding</span>
+                                </div>
+                            </div>
+                            <div class="ml-auto text-right">
+                                <div class="text-xs text-gray">Books Currently Issued</div>
+                                <div class="fw-700 text-navy" style="font-size:var(--text-xl)">3/5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ACTIVE ISSUES TAB ── -->
+            <div class="page-content tab-panel" id="tab-issues">
+                <div class="page-header">
+                    <h1 class="page-title">Active Issues</h1>
+                    <p class="page-subtitle">All currently issued books across all students</p>
+                </div>
+                <div class="flex gap-3" style="margin-bottom:var(--sp-4)">
+                    <input class="form-input" style="max-width:280px" id="issueSearch"
+                        placeholder="🔍 Search student or book…" oninput="filterIssues()" />
+                    <select class="form-input form-select" style="max-width:160px" onchange="filterIssues()">
+                        <option>All Issues</option>
+                        <option>Overdue Only</option>
+                        <option>Due Today</option>
+                    </select>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table" id="issuesTable">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Book</th>
+                                <th>Issued On</th>
+                                <th>Due Date</th>
+                                <th>Days Left</th>
+                                <th>Fine</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="issuesTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── RETURNS TAB ── -->
+            <div class="page-content tab-panel" id="tab-returns">
+                <div class="page-header">
+                    <h1 class="page-title">Process Return</h1>
+                </div>
+                <div class="grid grid-2" style="gap:var(--sp-6)">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Scan / Enter Book</div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Book ISBN / Accession No.</label><input
+                                class="form-input" id="returnISBN" placeholder="978-0262033848" /></div>
+                        <div class="form-group"><label class="form-label">Condition</label>
+                            <select class="form-input form-select">
+                                <option>Good — No damage</option>
+                                <option>Fair — Minor wear</option>
+                                <option>Poor — Significant damage</option>
+                                <option>Lost — Charge replacement cost</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-full" onclick="processReturn()">Process Return</button>
+                    </div>
+                    <div class="card" id="returnResult" style="display:none">
+                        <div class="card-header">
+                            <div class="card-title">Return Summary</div>
+                        </div>
+                        <div id="returnResultContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── FINES TAB ── -->
+            <div class="page-content tab-panel" id="tab-fines">
+                <div class="page-header">
+                    <h1 class="page-title">Fine Management</h1>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Book</th>
+                                <th>Overdue Days</th>
+                                <th>Fine Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finesTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── RESERVATIONS TAB ── -->
+            <div class="page-content tab-panel" id="tab-reservations">
+                <div class="page-header">
+                    <h1 class="page-title">Reservation Queue</h1>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Book</th>
+                                <th>Reserved On</th>
+                                <th>Expires</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservesTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── INVENTORY TAB ── -->
+            <div class="page-content tab-panel" id="tab-inventory">
+                <div class="page-header">
+                    <h1 class="page-title">Book Inventory</h1>
+                    <p class="page-subtitle">14,872 books · 12,040 available · 2,832 issued</p>
+                </div>
+                <div class="flex gap-3" style="margin-bottom:var(--sp-4)">
+                    <input class="form-input" style="flex:1;max-width:360px"
+                        placeholder="🔍 Search by title, ISBN, shelf…" />
+                    <select class="form-input form-select" style="max-width:160px">
+                        <option>All Subjects</option>
+                        <option>Computer Science</option>
+                        <option>Mathematics</option>
+                        <option>Physics</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="showModal('addBookModal')">+ Add Book</button>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>ISBN</th>
+                                <th>Copies</th>
+                                <th>Available</th>
+                                <th>Shelf</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── ANALYTICS TAB ── -->
+            <div class="page-content tab-panel" id="tab-analytics">
+                <div class="page-header">
+                    <h1 class="page-title">Library Analytics</h1>
+                </div>
+                <div class="grid grid-12">
+                    <div class="card col-7">
+                        <div class="card-header">
+                            <div class="card-title">7-Day Issue & Return Trend</div>
+                        </div>
+                        <canvas id="issueChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-5">
+                        <div class="card-header">
+                            <div class="card-title">Issues by Department</div>
+                        </div>
+                        <canvas id="deptChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-6">
+                        <div class="card-header">
+                            <div class="card-title">Fine Collection (Weekly)</div>
+                        </div>
+                        <canvas id="fineChart" height="180"></canvas>
+                    </div>
+                    <div class="card col-6">
+                        <div class="card-header">
+                            <div class="card-title">Top 5 Most Borrowed Books</div>
+                        </div>
+                        <div id="topBooks"
+                            style="display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-2)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── AUDIT LOG TAB ── -->
+            <div class="page-content tab-panel" id="tab-auditlog">
+                <div class="page-header">
+                    <h1 class="page-title">Immutable Audit Log</h1>
+                </div>
+                <div class="flex gap-3" style="margin-bottom:var(--sp-4)">
+                    <input class="form-input" style="flex:1;max-width:360px" placeholder="🔍 Search actions, users…" />
+                    <select class="form-input form-select" style="max-width:180px">
+                        <option>All Actions</option>
+                        <option>BOOK_ISSUED</option>
+                        <option>BOOK_RETURNED</option>
+                        <option>FINE_WAIVED</option>
+                        <option>FINE_PAID</option>
+                    </select>
+                    <input class="form-input" type="date" style="max-width:160px" />
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action</th>
+                                <th>Performed By</th>
+                                <th>Target</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scanner Modal -->
+    <div class="scanner-modal-overlay" id="scannerModal">
+        <div class="scanner-corners" style="position:absolute;inset:0;pointer-events:none"></div>
+        <div style="color:white;font-size:var(--text-xl);font-weight:800;margin-bottom:var(--sp-4)" id="scannerTitle">📤
+            Issue Book — Scan Barcodes</div>
+        <div class="scanner-frame">
+            <div class="scanner-line"></div>
+        </div>
+        <div class="scanner-text">Point camera at barcode or enter manually below</div>
+        <div class="scanner-manual">
+            <input type="text" class="form-input" id="manualBarcode1" placeholder="Student ID Barcode" />
+            <input type="text" class="form-input" id="manualBarcode2" placeholder="Book Barcode" />
+        </div>
+        <div style="display:flex;gap:var(--sp-3)">
+            <button class="btn btn-primary btn-lg" onclick="simulateScan()">Simulate Scan</button>
+            <button class="btn btn-secondary btn-lg" onclick="closeScannerModal()"
+                style="color:white;border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1)">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Issue Confirm Modal -->
+    <div class="scanner-modal-overlay" id="issueConfirmModal">
+        <div class="issue-confirm-card">
+            <div class="issue-confirm-icon">✅</div>
+            <div class="issue-confirm-title">Book Issued Successfully</div>
+            <div class="issue-detail-grid">
+                <div class="issue-detail-item">
+                    <div class="issue-detail-label">Student</div>
+                    <div class="issue-detail-value">Arya Das</div>
+                </div>
+                <div class="issue-detail-item">
+                    <div class="issue-detail-label">Roll No.</div>
+                    <div class="issue-detail-value font-mono">CS/2024/047</div>
+                </div>
+                <div class="issue-detail-item">
+                    <div class="issue-detail-label">Book</div>
+                    <div class="issue-detail-value">CLRS Algorithms</div>
+                </div>
+                <div class="issue-detail-item">
+                    <div class="issue-detail-label">Due Date</div>
+                    <div class="issue-detail-value" style="color:var(--amber)">Mar 6, 2026</div>
+                </div>
+                <div class="issue-detail-item">
+                    <div class="issue-detail-label">Accession No.</div>
+                    <div class="issue-detail-value font-mono">ACC-00847</div>
+                </div>
+                <div class="issue-detail-item">
+                    <div class="issue-detail-label">Issued By</div>
+                    <div class="issue-detail-value">Kavita Patel</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:var(--sp-3)">
+                <button class="btn btn-secondary" style="flex:1"
+                    onclick="showToast('Slip printed!','info');closeConfirmModal()">Print Slip</button>
+                <button class="btn btn-primary" style="flex:1" onclick="closeConfirmModal()">Issue Another</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Book Modal -->
+    <div class="modal-overlay" id="addBookModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Add New Book</div><button class="modal-close"
+                    onclick="closeModal('addBookModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input"
+                        placeholder="Book title" /></div>
+                <div class="grid grid-2" style="gap:var(--sp-4)">
+                    <div class="form-group"><label class="form-label">Author</label><input type="text"
+                            class="form-input" placeholder="Author name" /></div>
+                    <div class="form-group"><label class="form-label">ISBN</label><input type="text" class="form-input"
+                            placeholder="978-…" /></div>
+                    <div class="form-group"><label class="form-label">Subject</label><select
+                            class="form-input form-select">
+                            <option>Computer Science</option>
+                            <option>Mathematics</option>
+                            <option>Physics</option>
+                        </select></div>
+                    <div class="form-group"><label class="form-label">Copies</label><input type="number"
+                            class="form-input" placeholder="1" min="1" /></div>
+                    <div class="form-group"><label class="form-label">Shelf Location</label><input type="text"
+                            class="form-input" placeholder="CS-A1" /></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addBookModal')">Cancel</button>
+                <button class="btn btn-primary"
+                    onclick="closeModal('addBookModal');showToast('Book added to inventory!','success')">Add
+                    Book</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="js/api.js"></script>
+    <script src="js/librarian.js"></script>
+    <script src="js/translator.js"></script>
+</body>
+
+</html>

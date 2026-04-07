@@ -1,0 +1,275 @@
+/* CampusAI — Librarian Console Styles */
+
+/* Scanner Zone */
+.scanner-hero {
+    background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+    border-radius: var(--radius-xl);
+    padding: var(--sp-8);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--sp-6);
+}
+
+.scanner-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(37, 99, 235, 0.2), transparent 60%);
+}
+
+.scanner-hero-title {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    margin-bottom: var(--sp-2);
+    position: relative
+}
+
+.scanner-hero-sub {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: var(--sp-6);
+    position: relative
+}
+
+.scan-action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.scan-action-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-5);
+    cursor: pointer;
+    transition: all var(--transition);
+    backdrop-filter: blur(10px);
+}
+
+.scan-action-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+}
+
+.scan-action-icon {
+    font-size: 36px;
+    margin-bottom: var(--sp-3);
+}
+
+.scan-action-title {
+    font-size: var(--text-base);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.scan-action-desc {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* Scanner Modal Special */
+.scanner-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-6);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition);
+}
+
+.scanner-modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scanner-frame {
+    width: 320px;
+    height: 240px;
+    border: 3px solid var(--action-blue);
+    border-radius: var(--radius-xl);
+    position: relative;
+    background: rgba(37, 99, 235, 0.05);
+    overflow: hidden;
+    margin-bottom: var(--sp-6);
+}
+
+.scanner-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--action-blue), transparent);
+    animation: scanLine 2s ease-in-out infinite;
+    top: 0;
+}
+
+@keyframes scanLine {
+
+    0%,
+    100% {
+        top: 10%;
+    }
+
+    50% {
+        top: 90%;
+    }
+}
+
+.scanner-corners::before,
+.scanner-corners::after,
+.scanner-frame::before,
+.scanner-frame::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: rgba(96, 165, 250, 0.8);
+    border-style: solid;
+}
+
+.scanner-frame::before {
+    top: -1px;
+    left: -1px;
+    border-width: 3px 0 0 3px;
+    border-radius: var(--radius-md) 0 0 0;
+}
+
+.scanner-frame::after {
+    top: -1px;
+    right: -1px;
+    border-width: 3px 3px 0 0;
+    border-radius: 0 var(--radius-md) 0 0;
+}
+
+.scanner-corners::before {
+    bottom: -1px;
+    left: -1px;
+    border-width: 0 0 3px 3px;
+    border-radius: 0 0 0 var(--radius-md);
+}
+
+.scanner-corners::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 3px 3px 0;
+    border-radius: 0 0 var(--radius-md) 0;
+}
+
+.scanner-text {
+    color: white;
+    font-size: var(--text-sm);
+    text-align: center;
+    margin-bottom: var(--sp-4);
+    opacity: 0.7;
+}
+
+.scanner-manual {
+    display: flex;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-5);
+    width: 100%;
+    max-width: 400px;
+}
+
+.scanner-manual .form-input {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.scanner-manual .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.scanner-manual .form-input:focus {
+    border-color: var(--action-blue);
+    background: rgba(37, 99, 235, 0.15);
+}
+
+/* Issue Confirmation Card */
+.issue-confirm-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--sp-6);
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+}
+
+.issue-confirm-icon {
+    font-size: 48px;
+    margin-bottom: var(--sp-3);
+}
+
+.issue-confirm-title {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: var(--sp-5);
+}
+
+.issue-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3);
+    text-align: left;
+    margin-bottom: var(--sp-5);
+}
+
+.issue-detail-item {
+    padding: var(--sp-3);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+}
+
+.issue-detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray-400);
+    margin-bottom: 4px;
+}
+
+.issue-detail-value {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--navy);
+}
+
+/* Stats quick strip */
+.lib-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-6);
+}
+
+/* Audit Log */
+.audit-row-action {
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+@media (max-width: 768px) {
+    .scan-action-grid {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+    }
+
+    .lib-kpi-strip {
+        grid-template-columns: 1fr 1fr;
+    }
+}

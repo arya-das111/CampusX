@@ -1,0 +1,172 @@
+/* CampusAI — Alumni Portal Styles */
+
+.alumni-hero {
+    background: linear-gradient(135deg, #2D1B69 0%, var(--purple) 100%);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-6) var(--sp-8);
+    color: white;
+    margin-bottom: var(--sp-6);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-6);
+}
+
+.alumni-hero::after {
+    content: '';
+    position: absolute;
+    right: -80px;
+    top: -80px;
+    width: 320px;
+    height: 320px;
+    background: rgba(167, 139, 250, 0.15);
+    border-radius: 50%;
+    filter: blur(50px);
+}
+
+.alumni-stat-strip {
+    display: flex;
+    gap: var(--sp-4);
+    margin-top: var(--sp-4);
+}
+
+.alumni-stat {
+    text-align: center;
+}
+
+.alumni-stat-val {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+}
+
+.alumni-stat-label {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.impact-score-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+}
+
+.impact-score-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.impact-score-num {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: white;
+}
+
+.impact-score-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.mentee-card {
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-5);
+    transition: all var(--transition);
+    cursor: pointer;
+    position: relative;
+}
+
+.mentee-card:hover {
+    border-color: var(--purple);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.mentee-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--purple), #A78BFA);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.mentee-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-4);
+}
+
+.mentee-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--action-blue), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: var(--text-base);
+    flex-shrink: 0;
+}
+
+.mentee-name {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.mentee-degree {
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+}
+
+.mentee-jrs {
+    margin-left: auto;
+}
+
+.referral-card {
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-4);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    transition: all var(--transition);
+}
+
+.referral-card:hover {
+    border-color: var(--purple);
+    background: var(--purple-light);
+}
+
+.referral-company {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.referral-candidate {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+}
+
+@media (max-width:768px) {
+    .alumni-hero {
+        flex-direction: column;
+    }
+
+    .alumni-stat-strip {
+        flex-wrap: wrap;
+    }
+}

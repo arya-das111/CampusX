@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusAI — Admin & Placement Panel</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <div class="brand-icon">🏛️</div>
+                    <div>
+                        <div class="brand-name">CampusAI</div>
+                        <div class="brand-tag">Admin Console</div>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-label">Overview</div>
+                    <div class="nav-item active" onclick="switchTab('overview',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
+                        </svg>
+                        Institutional Overview
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-label">Analytics</div>
+                    <div class="nav-item" onclick="switchTab('library',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                        </svg>
+                        Library Analytics
+                    </div>
+                    <div class="nav-item" onclick="switchTab('career',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" />
+                            <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+                        </svg>
+                        Career & Placement
+                    </div>
+                    <div class="nav-item" onclick="switchTab('mentorship',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                            <path d="M16 3.13a4 4 0 010 7.75" />
+                        </svg>
+                        Mentorship Analytics
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-label">Management</div>
+                    <div class="nav-item" onclick="switchTab('knowledge',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                        </svg>
+                        Knowledge Base
+                    </div>
+                    <div class="nav-item" onclick="switchTab('users',this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                            <path d="M16 3.13a4 4 0 010 7.75" />
+                        </svg>
+                        User Management
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-chip" onclick="logout()">
+                    <div class="user-avatar" style="background:linear-gradient(135deg,var(--red),#F87171)">PO</div>
+                    <div class="user-info">
+                        <div class="user-name">Dr. Pankaj Ojha</div>
+                        <div class="user-role">Placement Officer / Admin</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)"
+                        stroke-width="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay-backdrop" id="backdrop" onclick="closeSidebar()"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" onclick="toggleSidebar()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="topbar-title" id="topbarTitle">Institutional Overview</div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" placeholder="Search students, reports…" />
+                    </div>
+                    <button class="icon-btn" onclick="showToast('Export report generated','success')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- ═══ OVERVIEW TAB ═══ -->
+            <div class="page-content tab-panel active" id="tab-overview">
+                <div class="admin-hero">
+                    <div style="position:relative">
+                        <div class="admin-hero-title">Institutional Dashboard</div>
+                        <div class="admin-hero-sub">Academic Year 2025–26 · Semester 6 · Updated Feb 20, 2026</div>
+                        <div class="alumni-stat-strip" style="margin-top:var(--sp-5)">
+                            <div class="alumni-stat">
+                                <div class="alumni-stat-val">3,842</div>
+                                <div class="alumni-stat-label">Active Students</div>
+                            </div>
+                            <div class="alumni-stat"
+                                style="border-left:1px solid rgba(255,255,255,0.2);padding-left:var(--sp-4)">
+                                <div class="alumni-stat-val">287</div>
+                                <div class="alumni-stat-label">Faculty</div>
+                            </div>
+                            <div class="alumni-stat"
+                                style="border-left:1px solid rgba(255,255,255,0.2);padding-left:var(--sp-4)">
+                                <div class="alumni-stat-val">14,872</div>
+                                <div class="alumni-stat-label">Library Books</div>
+                            </div>
+                            <div class="alumni-stat"
+                                style="border-left:1px solid rgba(255,255,255,0.2);padding-left:var(--sp-4)">
+                                <div class="alumni-stat-val">1,247</div>
+                                <div class="alumni-stat-label">Alumni Registered</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="position:relative;z-index:1">
+                        <div
+                            style="font-size:var(--text-xs);color:rgba(255,255,255,0.5);margin-bottom:var(--sp-3);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">
+                            System Health</div>
+                        <div class="system-health-list">
+                            <div class="health-item">
+                                <div class="health-dot green"></div><span class="health-label">API Gateway</span><span
+                                    class="health-value">99.98% uptime</span>
+                            </div>
+                            <div class="health-item">
+                                <div class="health-dot green"></div><span class="health-label">PostgreSQL
+                                    (RDS)</span><span class="health-value">p99: 8ms</span>
+                            </div>
+                            <div class="health-item">
+                                <div class="health-dot green"></div><span class="health-label">Kafka (MSK)</span><span
+                                    class="health-value">0 lag</span>
+                            </div>
+                            <div class="health-item">
+                                <div class="health-dot green"></div><span class="health-label">Qdrant (RAG)</span><span
+                                    class="health-value">97 docs indexed</span>
+                            </div>
+                            <div class="health-item">
+                                <div class="health-dot yellow"></div><span class="health-label">Email
+                                    Service</span><span class="health-value">Minor delay</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-kpi-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Avg JRS Score</div>
+                            <div class="stat-value">68.4</div>
+                            <div class="stat-change up">↑ 4.2 vs last semester</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.69 14a19.79 19.79 0 01-3.07-8.67A2 2 0 013.6 3.22h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 10a16 16 0 006.29 6.29l.75-.75a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Placement Rate (2025)</div>
+                            <div class="stat-value">84.2%</div>
+                            <div class="stat-change up">↑ 6.1% vs 2024</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Library Utilisation</div>
+                            <div class="stat-value">76.4%</div>
+                            <div class="stat-change up">↑ 8% vs last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Alumni Engagement</div>
+                            <div class="stat-value">38.7%</div>
+                            <div class="stat-change up">↑ 12% after MentorNet</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-12">
+                    <div class="card col-8">
+                        <div class="card-header">
+                            <div class="card-title">JRS Distribution Across Students</div><span class="badge badge-gray"
+                                style="font-size:11px">Semester 6 Cohort</span>
+                        </div>
+                        <canvas id="jrsDistChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-4">
+                        <div class="card-header">
+                            <div class="card-title">Avg JRS by Department</div>
+                        </div>
+                        <canvas id="jrsDeptChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-12">
+                        <div class="card-header">
+                            <div class="card-title">Platform Activity — Last 30 Days</div>
+                        </div>
+                        <canvas id="activityChart" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ LIBRARY ANALYTICS ═══ -->
+            <div class="page-content tab-panel" id="tab-library">
+                <div class="page-header">
+                    <h1 class="page-title">Library Analytics</h1>
+                </div>
+                <div class="admin-kpi-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Total Issues (Month)</div>
+                            <div class="stat-value">1,284</div>
+                            <div class="stat-change up">↑ 12% vs last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Overdue Books</div>
+                            <div class="stat-value">37</div>
+                            <div class="stat-change down">↑ 3 new this week</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Fines Collected</div>
+                            <div class="stat-value">₹3,760</div>
+                            <div class="stat-change up">↑ ₹480 this week</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Collection Rate</div>
+                            <div class="stat-value">84.3%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-12">
+                    <div class="card col-8">
+                        <div class="card-header">
+                            <div class="card-title">30-Day Borrowing Trend</div>
+                        </div><canvas id="libTrendChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-4">
+                        <div class="card-header">
+                            <div class="card-title">Issues by Department</div>
+                        </div><canvas id="libDeptChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ CAREER & PLACEMENT ═══ -->
+            <div class="page-content tab-panel" id="tab-career">
+                <div class="page-header">
+                    <h1 class="page-title">Career & Placement Analytics</h1>
+                </div>
+                <div class="admin-kpi-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Placed Students (2025)</div>
+                            <div class="stat-value">342 / 406</div>
+                            <div class="stat-change up">84.2% rate</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Avg Package</div>
+                            <div class="stat-value">₹11.4 LPA</div>
+                            <div class="stat-change up">↑ ₹1.2L vs 2024</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" />
+                                <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Companies Visited</div>
+                            <div class="stat-value">28</div>
+                            <div class="stat-change up">↑ 6 vs 2024</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M3 3l18 18" />
+                                <path d="M21 3L3 21" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Highest Package</div>
+                            <div class="stat-value">₹28 LPA</div>
+                            <div class="stat-change up">Google · 2 offers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-12">
+                    <div class="card col-8">
+                        <div class="card-header">
+                            <div class="card-title">Placement Funnel</div>
+                        </div><canvas id="placementFunnelChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-4">
+                        <div class="card-header">
+                            <div class="card-title">Package Distribution</div>
+                        </div><canvas id="packageDistChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-12">
+                        <div class="card-header">
+                            <div class="card-title">Top Recruiting Companies</div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>Sector</th>
+                                        <th>Offers</th>
+                                        <th>Avg Package</th>
+                                        <th>Max Package</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-700 text-navy">Google India</td>
+                                        <td>Tech</td>
+                                        <td>2</td>
+                                        <td>₹28 LPA</td>
+                                        <td>₹28 LPA</td>
+                                        <td><span class="badge badge-teal">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-700 text-navy">Microsoft</td>
+                                        <td>Tech</td>
+                                        <td>5</td>
+                                        <td>₹20 LPA</td>
+                                        <td>₹22 LPA</td>
+                                        <td><span class="badge badge-teal">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-700 text-navy">Flipkart</td>
+                                        <td>E-Commerce</td>
+                                        <td>8</td>
+                                        <td>₹15 LPA</td>
+                                        <td>₹18 LPA</td>
+                                        <td><span class="badge badge-teal">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-700 text-navy">TCS iON</td>
+                                        <td>IT Services</td>
+                                        <td>62</td>
+                                        <td>₹6.5 LPA</td>
+                                        <td>₹7 LPA</td>
+                                        <td><span class="badge badge-blue">Drive: Mar 5</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-700 text-navy">Infosys</td>
+                                        <td>IT Services</td>
+                                        <td>—</td>
+                                        <td>₹5.5 LPA</td>
+                                        <td>—</td>
+                                        <td><span class="badge badge-amber">Drive: Mar 10</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ MENTORSHIP ANALYTICS ═══ -->
+            <div class="page-content tab-panel" id="tab-mentorship">
+                <div class="page-header">
+                    <h1 class="page-title">Mentorship Analytics</h1>
+                </div>
+                <div class="admin-kpi-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Active Mentor Pairs</div>
+                            <div class="stat-value">184</div>
+                            <div class="stat-change up">↑ 42 this semester</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Sessions This Month</div>
+                            <div class="stat-value">312</div>
+                            <div class="stat-change up">↑ 18% vs last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Avg Session Rating</div>
+                            <div class="stat-value">4.7 / 5</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg></div>
+                        <div class="stat-info">
+                            <div class="stat-label">Match Accept Rate</div>
+                            <div class="stat-value">67.3%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-12">
+                    <div class="card col-6">
+                        <div class="card-header">
+                            <div class="card-title">Alumni Engagement Funnel</div>
+                        </div><canvas id="mentorFunnelChart" height="220"></canvas>
+                    </div>
+                    <div class="card col-6">
+                        <div class="card-header">
+                            <div class="card-title">Sessions Per Week Trend</div>
+                        </div><canvas id="sessionsChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ KNOWLEDGE BASE ═══ -->
+            <div class="page-content tab-panel" id="tab-knowledge">
+                <div class="page-header">
+                    <h1 class="page-title">Knowledge Base</h1>
+                    <p class="page-subtitle">Documents ingested into the Campus RAG Assistant</p>
+                </div>
+                <div class="flex gap-3" style="margin-bottom:var(--sp-4)">
+                    <input class="form-input" style="flex:1;max-width:360px" placeholder="🔍 Search documents…" />
+                    <button class="btn btn-primary" onclick="showModal('uploadDocModal')">+ Upload Document</button>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Document Name</th>
+                                <th>Category</th>
+                                <th>Size</th>
+                                <th>Uploaded</th>
+                                <th>Chunks</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="knowledgeTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ═══ USER MANAGEMENT ═══ -->
+            <div class="page-content tab-panel" id="tab-users">
+                <div class="page-header">
+                    <h1 class="page-title">User Management</h1>
+                </div>
+                <div class="flex gap-3" style="margin-bottom:var(--sp-4)">
+                    <input class="form-input" style="flex:1;max-width:360px" placeholder="🔍 Search users…" />
+                    <div class="role-filter-tabs" style="margin:0">
+                        <button class="role-filter-btn active" onclick="filterUsers('all',this)">All (3842)</button>
+                        <button class="role-filter-btn" onclick="filterUsers('student',this)">Students</button>
+                        <button class="role-filter-btn" onclick="filterUsers('faculty',this)">Faculty</button>
+                        <button class="role-filter-btn" onclick="filterUsers('librarian',this)">Librarians</button>
+                        <button class="role-filter-btn" onclick="filterUsers('alumni',this)">Alumni</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="showModal('addUserModal')">+ Add User</button>
+                </div>
+                <div class="card p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Last Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="uploadDocModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Upload Document to Knowledge Base</div><button class="modal-close"
+                    onclick="closeModal('uploadDocModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Document Name</label><input class="form-input"
+                        placeholder="e.g. Hostel Policy 2026-27" /></div>
+                <div class="form-group"><label class="form-label">Category</label><select
+                        class="form-input form-select">
+                        <option>Academic Policy</option>
+                        <option>Library</option>
+                        <option>Hostel & Facilities</option>
+                        <option>Placement</option>
+                        <option>Curriculum / Syllabus</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Upload File</label><input type="file"
+                        class="form-input" accept=".pdf,.docx,.txt" /></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('uploadDocModal')">Cancel</button>
+                <button class="btn btn-primary"
+                    onclick="closeModal('uploadDocModal');showToast('Document uploaded! RAG ingestion queued.','success')">Upload
+                    & Ingest</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addUserModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Add New User</div><button class="modal-close"
+                    onclick="closeModal('addUserModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="grid grid-2" style="gap:var(--sp-4)">
+                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input"
+                            placeholder="Full name" /></div>
+                    <div class="form-group"><label class="form-label">Email</label><input type="email"
+                            class="form-input" placeholder="name@campusai.edu" /></div>
+                    <div class="form-group"><label class="form-label">Role</label><select
+                            class="form-input form-select">
+                            <option>Student</option>
+                            <option>Faculty</option>
+                            <option>Librarian</option>
+                            <option>Admin</option>
+                        </select></div>
+                    <div class="form-group"><label class="form-label">Department</label><select
+                            class="form-input form-select">
+                            <option>Computer Science</option>
+                            <option>Electronics</option>
+                            <option>Mechanical</option>
+                        </select></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addUserModal')">Cancel</button>
+                <button class="btn btn-primary"
+                    onclick="closeModal('addUserModal');showToast('User created. Welcome email sent.','success')">Create
+                    User</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/translator.js"></script>
+</body>
+
+</html>
