@@ -27,7 +27,7 @@ function switchTab(name, el) {
     const panel = document.getElementById('tab-' + name);
     if (panel) panel.classList.add('active');
     if (el) el.classList.add('active');
-    const titles = { home: 'Dashboard', library: 'SmartLib', career: 'Career Engine', mentorship: 'MentorNet', chat: 'Campus Assistant', connect: 'Student Connect', notifications: 'Notifications' };
+    const titles = { home: 'Dashboard', library: 'SmartLib', career: 'Career Engine', mentorship: 'MentorNet', chat: 'Campus Assistant', connect: 'Student Connect', attendance: 'Attendance Tracking', notifications: 'Notifications' };
     document.getElementById('topbarTitle').textContent = titles[name] || 'CampusAI';
 }
 
@@ -954,6 +954,83 @@ function updateBreakdownBar(id, score) {
     }, 300);
 }
 
+// ── Attendance Tracking ─────────────────────────────────────────
+const subjectsAttendance = [
+    { code: 'CS301', name: 'Operating Systems', total: 40, attended: 35 },
+    { code: 'CS302', name: 'Computer Networks', total: 38, attended: 26 },
+    { code: 'CS303', name: 'Database Management Systems', total: 42, attended: 31 },
+    { code: 'CS304', name: 'Design and Analysis of Algorithms', total: 45, attended: 41 },
+    { code: 'HU301', name: 'Technical Communication', total: 20, attended: 12 },
+    { code: 'MA301', name: 'Probability and Statistics', total: 35, attended: 28 },
+];
+
+function renderAttendance() {
+    const grid = document.getElementById('attendanceGrid');
+    if (!grid) return;
+    
+    let totalClasses = 0;
+    let totalAttended = 0;
+    
+    grid.innerHTML = subjectsAttendance.map(subject => {
+        totalClasses += subject.total;
+        totalAttended += subject.attended;
+        
+        const percentage = ((subject.attended / subject.total) * 100).toFixed(1);
+        const isLow = percentage < 75;
+        
+        // Calculate classes needed if below 75%
+        // We know (attended + x) / (total + x) = 0.75
+        // x = 3*total - 4*attended
+        let notificationHtml = '';
+        if (isLow) {
+            const classesNeeded = Math.ceil(3 * subject.total - 4 * subject.attended);
+            notificationHtml = `
+            <div style="margin-top: 12px; padding: 10px; background: var(--red-light); color: var(--red); border-radius: var(--radius-md); font-size: 13px; font-weight: 600; display: flex; align-items: flex-start; gap: 8px;">
+                <span style="font-size: 16px;">⚠️</span>
+                <span>Requires ${classesNeeded} consecutive class${classesNeeded > 1 ? 'es' : ''} to reach 75%</span>
+            </div>`;
+        }
+        
+        return `
+        <div class="card col-4" style="${isLow ? 'border: 1px solid var(--red-light);' : ''}">
+            <div class="flex items-center justify-between" style="margin-bottom: var(--sp-2);">
+                <div class="badge badge-blue">${subject.code}</div>
+                <div class="badge ${isLow ? 'badge-red' : 'badge-teal'}" style="font-size: 13px; font-weight: bold;">
+                    ${percentage}%
+                </div>
+            </div>
+            <h4 style="color:var(--navy); margin-bottom: var(--sp-3); font-size: 16px;">${subject.name}</h4>
+            
+            <div class="flex items-center justify-between text-sm" style="margin-bottom: 8px;">
+                <span class="text-gray">Classes Attended</span>
+                <span class="fw-700 text-navy">${subject.attended} / ${subject.total}</span>
+            </div>
+            
+            <div class="progress">
+                <div class="progress-bar ${isLow ? 'progress-red' : 'progress-teal'}" style="width: ${percentage}%"></div>
+            </div>
+            
+            ${notificationHtml}
+        </div>`;
+    }).join('');
+    
+    // Update overall stats
+    const overallPercentage = ((totalAttended / totalClasses) * 100).toFixed(1);
+    const overallBadge = document.getElementById('overallAttendanceBadge');
+    const overallBar = document.getElementById('overallAttendanceBar');
+    const overallText = document.getElementById('overallAttendanceText');
+    
+    if (overallBadge && overallBar && overallText) {
+        overallBadge.textContent = overallPercentage + '%';
+        overallBadge.className = 'badge ' + (overallPercentage >= 75 ? 'badge-teal' : 'badge-red');
+        
+        overallBar.style.width = overallPercentage + '%';
+        overallBar.className = 'progress-bar ' + (overallPercentage >= 75 ? 'progress-teal' : 'progress-red');
+        
+        overallText.textContent = `${totalAttended} attended out of ${totalClasses} total classes`;
+    }
+}
+
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     drawJRSGauge();
@@ -967,6 +1044,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStudentConnect();
     renderMentors();
     renderNotifications();
+    renderAttendance();
 
     // animate progress bars
     setTimeout(() => {

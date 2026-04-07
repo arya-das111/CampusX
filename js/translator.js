@@ -70,19 +70,29 @@ class TranslationEngine {
         selectorContainer.style.backdropFilter = 'blur(10px)';
         selectorContainer.style.border = '1px solid rgba(0,0,0,0.05)';
         selectorContainer.style.transition = 'all 0.3s ease';
+        selectorContainer.style.cursor = 'pointer';
 
         const icon = document.createElement('span');
         // using an icon indicating translation
         icon.innerHTML = '🌍'; 
         icon.style.fontSize = '1.3rem';
+        icon.style.pointerEvents = 'none';
+
+        const labelText = document.createElement('span');
+        labelText.style.fontSize = '14px';
+        labelText.style.fontWeight = '700';
+        labelText.style.color = '#1e293b';
+        labelText.style.pointerEvents = 'none';
+        const currentLangObj = this.languages.find(l => l.code === this.currentLang);
+        labelText.textContent = currentLangObj ? currentLangObj.name : 'English';
 
         const select = document.createElement('select');
-        select.style.border = 'none';
-        select.style.background = 'transparent';
-        select.style.fontSize = '14px';
-        select.style.fontWeight = '700';
-        select.style.color = '#1e293b';
-        select.style.outline = 'none';
+        select.style.position = 'absolute';
+        select.style.top = '0';
+        select.style.left = '0';
+        select.style.width = '100%';
+        select.style.height = '100%';
+        select.style.opacity = '0';
         select.style.cursor = 'pointer';
 
         this.languages.forEach(lang => {
@@ -110,6 +120,9 @@ class TranslationEngine {
         select.addEventListener('change', (e) => {
             this.currentLang = e.target.value;
             localStorage.setItem('campusai_lang', this.currentLang);
+            const newLangObj = this.languages.find(l => l.code === this.currentLang);
+            if (newLangObj) labelText.textContent = newLangObj.name;
+
             if (this.currentLang === 'en-IN') {
                 this.restoreOriginal();
             } else {
@@ -124,6 +137,7 @@ class TranslationEngine {
 
         selectorContainer.appendChild(icon);
         selectorContainer.appendChild(spinner);
+        selectorContainer.appendChild(labelText);
         selectorContainer.appendChild(select);
         document.body.appendChild(selectorContainer);
     }
@@ -211,13 +225,18 @@ class TranslationEngine {
             // Or batch translation to avoid making 100s of requests
             // Maximum 10 items per batch to preserve delimiter accurately
             const BATCH_SIZE = 10; 
+            const CONCURRENCY_LIMIT = 5;
             
             const langSelect = document.querySelector('#campusai-lang-selector select');
             if (langSelect && !isDynamicUpdate) langSelect.disabled = true;
 
-            for (let i = 0; i < nodesToTranslate.length; i += BATCH_SIZE) {
-                const batch = nodesToTranslate.slice(i, i + BATCH_SIZE);
-                await this.processBatch(batch, targetLangCode);
+            for (let i = 0; i < nodesToTranslate.length; i += BATCH_SIZE * CONCURRENCY_LIMIT) {
+                const chunkPromises = [];
+                for (let j = 0; j < CONCURRENCY_LIMIT && (i + j * BATCH_SIZE) < nodesToTranslate.length; j++) {
+                    const batch = nodesToTranslate.slice(i + j * BATCH_SIZE, i + (j + 1) * BATCH_SIZE);
+                    chunkPromises.push(this.processBatch(batch, targetLangCode));
+                }
+                await Promise.all(chunkPromises);
             }
 
             if (langSelect && !isDynamicUpdate) langSelect.disabled = false;
