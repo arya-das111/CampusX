@@ -2,7 +2,9 @@
 // Shared across student.js, admin.js, librarian.js, alumni.js
 // Usage: const data = await api.get('/books'); or api.post('/auth/login', { email, password })
 
-const API_BASE = '/api';
+const API_ORIGIN = globalThis.CAMPUSAI_API_ORIGIN
+    || (globalThis.location.port === '5000' ? globalThis.location.origin : 'http://localhost:5000');
+const API_BASE = `${API_ORIGIN}/api`;
 
 const api = {
     _token() {
@@ -17,27 +19,27 @@ const api = {
     },
 
     async get(path) {
-        const res = await fetch(`${API_BASE}${path}`, { headers: this._headers() });
+        const res = await fetch(`${API_BASE}${path}`, { headers: this._headers(), credentials: 'include' });
         return res.json();
     },
 
     async post(path, body) {
         const res = await fetch(`${API_BASE}${path}`, {
-            method: 'POST', headers: this._headers(), body: JSON.stringify(body)
+            method: 'POST', headers: this._headers(), body: JSON.stringify(body), credentials: 'include'
         });
         return res.json();
     },
 
     async put(path, body) {
         const res = await fetch(`${API_BASE}${path}`, {
-            method: 'PUT', headers: this._headers(), body: JSON.stringify(body)
+            method: 'PUT', headers: this._headers(), body: JSON.stringify(body), credentials: 'include'
         });
         return res.json();
     },
 
     async del(path) {
         const res = await fetch(`${API_BASE}${path}`, {
-            method: 'DELETE', headers: this._headers()
+            method: 'DELETE', headers: this._headers(), credentials: 'include'
         });
         return res.json();
     },
@@ -47,7 +49,7 @@ const api = {
         const t = this._token();
         if (t) h['Authorization'] = `Bearer ${t}`;
         const res = await fetch(`${API_BASE}${path}`, {
-            method: 'POST', headers: h, body: formData
+            method: 'POST', headers: h, body: formData, credentials: 'include'
         });
         return res.json();
     },
@@ -66,9 +68,10 @@ const api = {
         return !!this._token();
     },
 
-    logout() {
+    async logout() {
+        try { await this.post('/auth/logout', {}); } catch { }
         localStorage.removeItem('campusai_token');
         localStorage.removeItem('campusai_user');
-        window.location.href = '/index.html';
+        globalThis.location.href = '/index.html';
     }
 };

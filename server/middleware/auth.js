@@ -4,17 +4,23 @@ const User = require('../models/User');
 // Verify JWT token
 const protect = async (req, res, next) => {
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    if (req.headers.authorization?.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
+    }
+    if (!token && req.cookies?.access_token) {
+        token = req.cookies.access_token;
     }
     if (!token) return res.status(401).json({ success: false, message: 'Not authorised — no token' });
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.type && decoded.type !== 'access') {
+            return res.status(401).json({ success: false, message: 'Token type not allowed' });
+        }
         req.user = await User.findById(decoded.id).select('-password');
         if (!req.user) return res.status(401).json({ success: false, message: 'User not found' });
         next();
-    } catch (err) {
+    } catch {
         return res.status(401).json({ success: false, message: 'Token invalid or expired' });
     }
 };

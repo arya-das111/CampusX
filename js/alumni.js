@@ -17,6 +17,51 @@ function logout() { if (confirm('Sign out?')) window.location.href = 'index.html
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('backdrop').classList.toggle('visible'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('backdrop').classList.remove('visible'); }
 
+function getInitials(name = '') {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .map(part => part[0].toUpperCase())
+    .join('')
+    .slice(0, 2) || 'AL';
+}
+
+function getRolePage(role) {
+  const pages = { student: 'student.html', librarian: 'librarian.html', admin: 'admin.html', alumni: 'alumni.html' };
+  return pages[role] || 'index.html';
+}
+
+function ensureAlumniSession() {
+  const user = api.getUser();
+  if (!user?.role) {
+    globalThis.location.href = 'index.html';
+    return null;
+  }
+  if (user.role !== 'alumni') {
+    globalThis.location.href = getRolePage(user.role);
+    return null;
+  }
+  return user;
+}
+
+function hydrateAlumniIdentity(user) {
+  const name = user.name || 'Alumni';
+  const avatar = user.avatar || getInitials(name);
+  const department = user.department || 'Alumni Network';
+
+  const avatarEl = document.getElementById('alumniUserAvatar');
+  const nameEl = document.getElementById('alumniUserName');
+  const roleEl = document.getElementById('alumniUserRole');
+  const greetingEl = document.getElementById('alumniGreeting');
+  const subtitleEl = document.getElementById('alumniSubtitle');
+
+  if (avatarEl) avatarEl.textContent = avatar;
+  if (nameEl) nameEl.textContent = name;
+  if (roleEl) roleEl.textContent = `${department} · Alumni`;
+  if (greetingEl) greetingEl.textContent = `Welcome back, ${name.split(' ')[0]}! 🌟`;
+  if (subtitleEl) subtitleEl.textContent = `${department} · Alumni Member`;
+}
+
 const tabTitles = { dashboard: 'Dashboard', mentees: 'My Mentees', sessions: 'Sessions', referrals: 'Referrals', profile: 'My Profile' };
 function switchTab(name, el) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -154,6 +199,10 @@ function renderImpactRing() {
 
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  const user = ensureAlumniSession();
+  if (!user) return;
+  hydrateAlumniIdentity(user);
+
     renderImpactRing();
 
     const dashGrid = document.getElementById('menteeDashGrid');

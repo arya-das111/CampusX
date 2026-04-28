@@ -17,6 +17,47 @@ function logout() { if (confirm('Sign out?')) window.location.href = 'index.html
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('backdrop').classList.toggle('visible'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('backdrop').classList.remove('visible'); }
 
+function getInitials(name = '') {
+    return name
+        .split(' ')
+        .filter(Boolean)
+        .map(part => part[0].toUpperCase())
+        .join('')
+        .slice(0, 2) || 'AD';
+}
+
+function getRolePage(role) {
+    const pages = { student: 'student.html', librarian: 'librarian.html', admin: 'admin.html', alumni: 'alumni.html' };
+    return pages[role] || 'index.html';
+}
+
+function ensureAdminSession() {
+    const user = api.getUser();
+    if (!user?.role) {
+        globalThis.location.href = 'index.html';
+        return null;
+    }
+    if (user.role !== 'admin') {
+        globalThis.location.href = getRolePage(user.role);
+        return null;
+    }
+    return user;
+}
+
+function hydrateAdminIdentity(user) {
+    const name = user.name || 'Admin User';
+    const role = user.department ? `${user.department} / Admin` : 'Placement Officer / Admin';
+    const avatar = user.avatar || getInitials(name);
+
+    const avatarEl = document.getElementById('adminUserAvatar');
+    const nameEl = document.getElementById('adminUserName');
+    const roleEl = document.getElementById('adminUserRole');
+
+    if (avatarEl) avatarEl.textContent = avatar;
+    if (nameEl) nameEl.textContent = name;
+    if (roleEl) roleEl.textContent = role;
+}
+
 const tabTitles = { overview: 'Institutional Overview', library: 'Library Analytics', career: 'Career & Placement', mentorship: 'Mentorship Analytics', knowledge: 'Knowledge Base', users: 'User Management' };
 function switchTab(name, el) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -164,6 +205,10 @@ function renderUsers(data) {
 document.querySelectorAll('.modal-overlay').forEach(o => { o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }); });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const user = ensureAdminSession();
+    if (!user) return;
+    hydrateAdminIdentity(user);
+
     chartInited.overview = true; chartInit.overview();
     renderKnowledge();
     renderUsers(usersData);

@@ -1,6 +1,7 @@
 const express = require('express');
 const Book = require('../models/Book');
 const Borrow = require('../models/Borrow');
+const { emitRealtime } = require('../realtime');
 const { protect, authorise } = require('../middleware/auth');
 const router = express.Router();
 
@@ -24,6 +25,31 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET /api/books/borrowed/me — my active borrows
+router.get('/borrowed/me', protect, async (req, res) => {
+    try {
+        const borrows = await Borrow.find({ user: req.user._id, status: { $in: ['active', 'overdue'] } })
+            .populate('book').sort({ dueDate: 1 });
+        res.json({ success: true, data: borrows });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// GET /api/books/borrowed/active — all active borrows (librarian/admin)
+router.get('/borrowed/active', protect, authorise('librarian', 'admin'), async (req, res) => {
+    try {
+        const borrows = await Borrow.find({ status: { $in: ['active', 'overdue'] } })
+            .populate({ path: 'book', select: 'title author isbn category copies available location cover' })
+            .populate({ path: 'user', select: 'name email department year role avatar' })
+            .sort({ dueDate: 1, createdAt: -1 });
+
+        res.json({ success: true, data: borrows, count: borrows.length });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // GET /api/books/:id
 router.get('/:id', async (req, res) => {
     try {
@@ -39,6 +65,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', protect, authorise('librarian', 'admin'), async (req, res) => {
     try {
         const book = await Book.create(req.body);
+        emitRealtime('library:book:created', {
+            book,
+            createdBy: req.user?._id,
+            timestamp: new Date().toISOString()
+        });
         res.status(201).json({ success: true, data: book });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -50,6 +81,11 @@ router.put('/:id', protect, authorise('librarian', 'admin'), async (req, res) =>
     try {
         const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!book) return res.status(404).json({ success: false, message: 'Book not found' });
+        emitRealtime('library:book:updated', {
+            book,
+            updatedBy: req.user?._id,
+            timestamp: new Date().toISOString()
+        });
         res.json({ success: true, data: book });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -82,6 +118,15 @@ router.post('/:id/reserve', protect, async (req, res) => {
         book.available -= 1;
         await book.save();
 
+        emitRealtime('library:book:reserved', {
+            bookId: String(book._id),
+            available: book.available,
+            copies: book.copies,
+            reservedBy: req.user?._id,
+            borrowId: String(borrow._id),
+            timestamp: new Date().toISOString()
+        });
+
         res.status(201).json({ success: true, data: borrow });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -98,19 +143,18 @@ router.post('/:id/return', protect, async (req, res) => {
         borrow.status = 'returned';
         await borrow.save();
 
-        await Book.findByIdAndUpdate(req.params.id, { $inc: { available: 1 } });
-        res.json({ success: true, data: borrow });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
+        const updatedBook = await Book.findByIdAndUpdate(req.params.id, { $inc: { available: 1 } }, { new: true });
 
-// GET /api/books/borrowed/me — my active borrows
-router.get('/borrowed/me', protect, async (req, res) => {
-    try {
-        const borrows = await Borrow.find({ user: req.user._id, status: { $in: ['active', 'overdue'] } })
-            .populate('book').sort({ dueDate: 1 });
-        res.json({ success: true, data: borrows });
+        emitRealtime('library:book:returned', {
+            bookId: String(req.params.id),
+            available: updatedBook?.available,
+            copies: updatedBook?.copies,
+            returnedBy: req.user?._id,
+            borrowId: String(borrow._id),
+            timestamp: new Date().toISOString()
+        });
+
+        res.json({ success: true, data: borrow });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }

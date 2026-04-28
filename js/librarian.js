@@ -18,6 +18,47 @@ function logout() { if (confirm('Sign out?')) window.location.href = 'index.html
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('backdrop').classList.toggle('visible'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('backdrop').classList.remove('visible'); }
 
+function getInitials(name = '') {
+    return name
+        .split(' ')
+        .filter(Boolean)
+        .map(part => part[0].toUpperCase())
+        .join('')
+        .slice(0, 2) || 'LB';
+}
+
+function getRolePage(role) {
+    const pages = { student: 'student.html', librarian: 'librarian.html', admin: 'admin.html', alumni: 'alumni.html' };
+    return pages[role] || 'index.html';
+}
+
+function ensureLibrarianSession() {
+    const user = api.getUser();
+    if (!user?.role) {
+        globalThis.location.href = 'index.html';
+        return null;
+    }
+    if (user.role !== 'librarian') {
+        globalThis.location.href = getRolePage(user.role);
+        return null;
+    }
+    return user;
+}
+
+function hydrateLibrarianIdentity(user) {
+    const name = user.name || 'Librarian';
+    const role = user.department || 'Head Librarian';
+    const avatar = user.avatar || getInitials(name);
+
+    const avatarEl = document.getElementById('librarianUserAvatar');
+    const nameEl = document.getElementById('librarianUserName');
+    const roleEl = document.getElementById('librarianUserRole');
+
+    if (avatarEl) avatarEl.textContent = avatar;
+    if (nameEl) nameEl.textContent = name;
+    if (roleEl) roleEl.textContent = role;
+}
+
 function switchTab(name, el) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -269,6 +310,10 @@ function initAnalyticsCharts() {
 
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    const user = ensureLibrarianSession();
+    if (!user) return;
+    hydrateLibrarianIdentity(user);
+
     // Default due date = 14 days from today
     const d = new Date(); d.setDate(d.getDate() + 14);
     const dueDateInput = document.getElementById('dueDate');

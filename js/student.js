@@ -16,8 +16,64 @@ function showToast(message, type = 'success') {
 function showModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+let currentStudentUser = {
+    name: 'Student User',
+    role: 'student',
+    department: 'Student',
+    year: null
+};
+
+function getInitials(name = '') {
+    return name
+        .split(' ')
+        .filter(Boolean)
+        .map(part => part[0].toUpperCase())
+        .join('')
+        .slice(0, 2) || 'ST';
+}
+
+function getRolePage(role) {
+    const pages = { student: 'student.html', librarian: 'librarian.html', admin: 'admin.html', alumni: 'alumni.html' };
+    return pages[role] || 'index.html';
+}
+
+function ensureStudentSession() {
+    const user = api.getUser();
+    if (!user?.role) {
+        globalThis.location.href = 'index.html';
+        return null;
+    }
+    if (user.role !== 'student') {
+        globalThis.location.href = getRolePage(user.role);
+        return null;
+    }
+    currentStudentUser = user;
+    return user;
+}
+
+function hydrateStudentIdentity(user) {
+    const name = user.name || 'Student';
+    const department = user.department || 'Student';
+    const year = user.year ? `Year ${user.year}` : 'Student';
+    const avatar = user.avatar || getInitials(name);
+
+    const avatarEl = document.getElementById('studentUserAvatar');
+    const nameEl = document.getElementById('studentUserName');
+    const roleEl = document.getElementById('studentUserRole');
+    const greetingEl = document.getElementById('studentGreeting');
+    const chatWelcomeEl = document.getElementById('studentChatWelcome');
+
+    if (avatarEl) avatarEl.textContent = avatar;
+    if (nameEl) nameEl.textContent = name;
+    if (roleEl) roleEl.textContent = `${department} · ${year}`;
+    if (greetingEl) greetingEl.textContent = `Good morning, ${name.split(' ')[0]} 👋`;
+    if (chatWelcomeEl) {
+        chatWelcomeEl.innerHTML = `Hello ${name.split(' ')[0]}! 👋 I'm your Campus AI Assistant, powered by RAG (Retrieval-Augmented Generation). I can answer questions about:<br /><br />• Exam schedules and academic calendar<br />• Library policies and timings<br />• Placement & career guidance<br />• Hostel & campus facilities<br />• Department contacts and offices<br /><br />What would you like to know today?`;
+    }
+}
+
 function logout() {
-    if (confirm('Sign out of CampusAI?')) window.location.href = 'index.html';
+    if (confirm('Sign out of CampusAI?')) globalThis.location.href = 'index.html';
 }
 
 // ── Navigation ─────────────────────────────────────────────────
@@ -324,9 +380,13 @@ function renderStudentConnect(filterText = '') {
     const mySkills = [...techSkills, ...softSkills].map(s => ({
         name: s.name, level: s.level, color: s.color
     }));
-    const me = { 
-        initials: 'AD', name: 'Arya Das', major: 'Computer Science', 
-        grad: 2027, skills: mySkills, isMe: true 
+    const me = {
+        initials: currentStudentUser.avatar || getInitials(currentStudentUser.name),
+        name: currentStudentUser.name || 'Student',
+        major: currentStudentUser.department || 'Student',
+        grad: 2027,
+        skills: mySkills,
+        isMe: true
     };
 
     const allStudents = [me, ...peerStudents];
@@ -375,9 +435,13 @@ function filterStudentConnect() {
 
 function viewStudentProfile(name) {
     const allStudents = [
-        { 
-            initials: 'AD', name: 'Arya Das', major: 'Computer Science', 
-            grad: 2027, skills: [...techSkills, ...softSkills].map(s => ({name: s.name, level: s.level, color: s.color})), isMe: true 
+        {
+            initials: currentStudentUser.avatar || getInitials(currentStudentUser.name),
+            name: currentStudentUser.name || 'Student',
+            major: currentStudentUser.department || 'Student',
+            grad: 2027,
+            skills: [...techSkills, ...softSkills].map(s => ({ name: s.name, level: s.level, color: s.color })),
+            isMe: true
         },
         ...peerStudents
     ];
@@ -1033,6 +1097,10 @@ function renderAttendance() {
 
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    const user = ensureStudentSession();
+    if (!user) return;
+    hydrateStudentIdentity(user);
+
     drawJRSGauge();
     drawReadinessChart();
     drawATSRing();
