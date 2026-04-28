@@ -1,4 +1,4 @@
-# CampusAI — Full-Stack Campus Management Platform
+# CampusX — Full-Stack Campus Management Platform
 
 ## Quick Start
 
