@@ -110,10 +110,10 @@
             </nav>
             <div class="sidebar-footer">
                 <div class="user-chip" onclick="logout()">
-                    <div class="user-avatar">AD</div>
+                    <div class="user-avatar" id="studentUserAvatar">ST</div>
                     <div class="user-info">
-                        <div class="user-name">Arya Das</div>
-                        <div class="user-role">Computer Science · 3rd Year</div>
+                        <div class="user-name" id="studentUserName">Student User</div>
+                        <div class="user-role" id="studentUserRole">Student</div>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)"
                         stroke-width="2">
@@ -162,7 +162,7 @@
             <!-- ══════════ HOME TAB ══════════ -->
             <div class="page-content tab-panel active" id="tab-home">
                 <div class="page-header">
-                    <h1 class="page-title">Good morning, Arya 👋</h1>
+                    <h1 class="page-title" id="studentGreeting">Good morning 👋</h1>
                     <p class="page-subtitle">Friday, 20 February 2026 · Semester 6 · Week 7 of 18</p>
                 </div>
 
@@ -993,7 +993,7 @@
                             <div class="chat-ai-avatar" style="width:32px;height:32px;font-size:14px;flex-shrink:0">🤖
                             </div>
                             <div>
-                                <div class="chat-msg-bubble">Hello Arya! 👋 I'm your Campus AI Assistant, powered by RAG
+                                <div class="chat-msg-bubble" id="studentChatWelcome">Hello! 👋 I'm your Campus AI Assistant, powered by RAG
                                     (Retrieval-Augmented Generation). I can answer questions about:<br /><br />• Exam
                                     schedules and academic calendar<br />• Library policies and timings<br />• Placement
                                     & career guidance<br />• Hostel & campus facilities<br />• Department contacts and

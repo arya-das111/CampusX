@@ -73,10 +73,10 @@
             </nav>
             <div class="sidebar-footer">
                 <div class="user-chip" onclick="logout()">
-                    <div class="user-avatar" style="background:linear-gradient(135deg,var(--purple),#A78BFA)">PM</div>
+                    <div class="user-avatar" id="alumniUserAvatar" style="background:linear-gradient(135deg,var(--purple),#A78BFA)">AL</div>
                     <div class="user-info">
-                        <div class="user-name">Priya Mehta</div>
-                        <div class="user-role">Senior SWE · Google India · 2020</div>
+                        <div class="user-name" id="alumniUserName">Alumni User</div>
+                        <div class="user-role" id="alumniUserRole">Alumni</div>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)"
                         stroke-width="2">
@@ -118,8 +118,8 @@
                         <div
                             style="font-size:var(--text-xs);color:rgba(255,255,255,0.55);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">
                             Alumni Impact Dashboard</div>
-                        <h1 class="page-title" style="color:white;margin-bottom:4px">Welcome back, Priya! 🌟</h1>
-                        <p style="color:rgba(255,255,255,0.65);font-size:var(--text-sm)">Senior Software Engineer ·
+                        <h1 class="page-title" id="alumniGreeting" style="color:white;margin-bottom:4px">Welcome back! 🌟</h1>
+                        <p id="alumniSubtitle" style="color:rgba(255,255,255,0.65);font-size:var(--text-sm)">Senior Software Engineer ·
                             Google India · Graduating Class of 2020</p>
                         <div class="alumni-stat-strip">
                             <div class="alumni-stat">
